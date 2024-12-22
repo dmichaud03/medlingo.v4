@@ -4,22 +4,22 @@
 import simpleRestProvider from "ra-data-simple-rest";
 import { Admin, Resource } from "react-admin";
 
-import { ChallengeList } from "./challenge/list";
+
 import { ChallengeCreate } from "./challenge/create";
 import { ChallengeEdit } from "./challenge/edit";
-import { ChallengeOptionList } from "./challengeOption/list";
+import { ChallengeList } from "./challenge/list";
 import { ChallengeOptionCreate } from "./challengeOption/create";
 import { ChallengeOptionEdit } from "./challengeOption/edit";
-import { CourseList } from "./course/list";
+import { ChallengeOptionList } from "./challengeOption/list";
 import { CourseCreate } from "./course/create";
 import { CourseEdit } from "./course/edit";
-import { LessonList } from "./lesson/list";
+import { CourseList } from "./course/list";
 import { LessonCreate } from "./lesson/create";
 import { LessonEdit } from "./lesson/edit";
-import { UnitList } from "./unit/list";
+import { LessonList } from "./lesson/list";
 import { UnitCreate } from "./unit/create";
 import { UnitEdit } from "./unit/edit";
-
+import { UnitList } from "./unit/list";
 
 
 
