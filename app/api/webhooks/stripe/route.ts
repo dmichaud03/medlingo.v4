@@ -7,11 +7,7 @@ import db from "@/db/drizzle";
 import { userSubscription } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
