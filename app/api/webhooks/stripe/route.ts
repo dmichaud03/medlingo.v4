@@ -12,7 +12,7 @@ import { stripe } from "@/lib/stripe";
 export async function POST(req: Request) {
     const body = await req.text(); // Raw body is required for Stripe signature verification
     const rawHeaders = headers();
-    const signature = await rawHeaders.get("Stripe-Signature") as string;
+    const signature = rawHeaders.get("Stripe-Signature") as string;
 
     if (!signature) {
         return NextResponse.json(
