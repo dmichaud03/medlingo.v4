@@ -1,8 +1,8 @@
-import { SimpleForm, Create, required, TextInput, ReferenceInput, NumberInput } from "react-admin";
+import { SimpleForm, Edit, required, TextInput, ReferenceInput, NumberInput } from "react-admin";
 
 export const LessonEdit = () => {
     return (
-        <Create>
+        <Edit>
             <SimpleForm>
                 <TextInput 
                     source="title" 
@@ -18,6 +18,6 @@ export const LessonEdit = () => {
                     label="Order"
                     />
             </SimpleForm>
-        </Create>
+        </Edit>
     );
 };
