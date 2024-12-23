@@ -37,14 +37,12 @@ export async function POST(req: Request) {
 
         // Log event details (optional for debugging)
         console.log("Received event:", event);
-    } catch (error: any) {
-        console.error("Error verifying webhook:", error);
+    } catch (error: unknown) {
+    return new NextResponse(`Webhook error ${JSON.stringify(error)}`, {
+      status: 400,
+    });
+  }
 
-        return NextResponse.json(
-            { error: `Webhook error: ${error.message || "Unknown error"}` },
-            { status: 400 }
-        );
-    }
         const session = event.data.object as Stripe.Checkout.Session;
 
         if (event.type === "checkout.session.completed") {
