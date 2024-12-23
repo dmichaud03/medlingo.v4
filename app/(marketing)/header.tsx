@@ -55,12 +55,6 @@ export const Header = () => {
               rel="noreferrer noopener"
               className={userId ? "pt-1.5" : "pt-3"}
             >
-              <Image
-                src="/github.svg"
-                alt="Source Code"
-                height={20}
-                width={20}
-              />
             </Link>
           </ClerkLoaded>
         </div>
