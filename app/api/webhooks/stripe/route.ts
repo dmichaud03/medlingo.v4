@@ -6,12 +6,6 @@ import { NextResponse } from "next/server";
 import db from "@/db/drizzle";
 import { stripe } from "@/lib/stripe";
 import { userSubscription } from "@/db/schema";
-
-export const config = {
-    api: {
-      bodyParser: false,
-    },
-  };
   
 export async function POST(req: Request) {
     const body = await req.text(); // Raw body is required for Stripe signature verification
