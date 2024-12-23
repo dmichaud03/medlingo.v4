@@ -1,68 +1,90 @@
+import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { NextResponse, type NextRequest } from "next/server";
-import Stripe from "stripe";
+import { NextResponse } from "next/server";
 
 import db from "@/db/drizzle";
-import { userSubscription } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
+import { userSubscription } from "@/db/schema";
 
+export const config = {
+    api: {
+      bodyParser: false,
+    },
+  };
+  
+export async function POST(req: Request) {
+    const body = await req.text(); // Raw body is required for Stripe signature verification
+    const rawHeaders = headers();
+    const signature = (await rawHeaders).get("Stripe-Signature") as string;
 
+    if (!signature) {
+        return NextResponse.json(
+            { error: "Missing Stripe-Signature header" },
+            { status: 400 }
+        );
+    }
 
-export async function POST(req: NextRequest) {
-  const body = await req.text();
-  const signature = headers().get("Stripe-Signature") as string;
+    let event: Stripe.Event;
 
-  let event: Stripe.Event;
+    try {
+        // Ensure STRIPE_WEBHOOK_SECRET is available
+        if (!process.env.STRIPE_WEBHOOK_SECRET) {
+            throw new Error("Stripe webhook secret is not configured");
+        }
 
-  try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (error: unknown) {
-    return new NextResponse(`Webhook error ${JSON.stringify(error)}`, {
-      status: 400,
-    });
-  }
+        // Construct the event with raw body and signature
+        event = stripe.webhooks.constructEvent(
+            body,
+            signature,
+            process.env.STRIPE_WEBHOOK_SECRET
+        );
 
-  const session = event.data.object as Stripe.Checkout.Session;
+        // Log event details (optional for debugging)
+        console.log("Received event:", event);
+    } catch (error: any) {
+        console.error("Error verifying webhook:", error);
 
-  // user subscription completed
-  if (event.type === "checkout.session.completed") {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    );
+        return NextResponse.json(
+            { error: `Webhook error: ${error.message || "Unknown error"}` },
+            { status: 400 }
+        );
+    }
+        const session = event.data.object as Stripe.Checkout.Session;
 
-    if (!session?.metadata?.userId)
-      return new NextResponse("User id is required.", { status: 400 });
+        if (event.type === "checkout.session.completed") {
+            const subscription = await stripe.subscriptions.retrieve(
+                session.subscription as string
+            );
 
-    await db.insert(userSubscription).values({
-      userId: session.metadata.userId,
-      stripeSubscriptionId: subscription.id,
-      stripeCustomerId: subscription.customer as string,
-      stripePriceId: subscription.items.data[0].price.id,
-      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000), // in ms
-    });
-  }
+            if (!session?.metadata?.userId) {
+                return new NextResponse("User ID is required", { status: 400 });
+            }
 
-  // renew user subscription
-  if (event.type === "invoice.payment_succeeded") {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    );
+            await db.insert(userSubscription).values({
+                userId: session.metadata.userId,
+                stripeSubscriptionId: subscription.id,
+                stripeCustomerId: subscription.customer as string,
+                stripePriceId: subscription.items.data[0].price.id,
+                stripeCurrentPeriodEnd: new Date (
+                    subscription.current_period_end * 1000,
+                ),
 
-    await db
-      .update(userSubscription)
-      .set({
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000 // in ms
-        ),
-      })
-      .where(eq(userSubscription.stripeSubscriptionId, subscription.id));
-  }
+            });
+        }
 
-  return new NextResponse(null, { status: 200 });
-}
+        if (event.type === "invoice.payment_succeeded") {
+            const subscription = await stripe.subscriptions.retrieve(
+                session.subscription as string
+            );
+
+            await db.update(userSubscription).set({
+            stripePriceId: subscription.items.data[0].price.id,
+            stripeCurrentPeriodEnd: new Date(
+                subscription.current_period_end * 1000,  
+            ),
+        }).where(eq(userSubscription.stripeSubscriptionId, subscription.id))
+    }
+    // Respond with status 200 for successful processing
+    return NextResponse.json({ message: "Webhook received successfully" }, { status: 200 });
+};
