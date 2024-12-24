@@ -23,7 +23,7 @@ export const Header = () => {
         <Link href="/" className="flex items-center gap-x-3 pb-7 pl-4 pt-8">
           <Image src="hero2.png" alt="Hero" height={50} width={50} />
 
-          <h1 className="text-2xl font-extrabold tracking-wide text-green-600">
+          <h1 className="text-2xl font-extrabold tracking-wide text-blue-600">
             Medlingo
           </h1>
         </Link>
