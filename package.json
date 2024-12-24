@@ -1,6 +1,6 @@
 {
-  "name": "duolingo-clone",
-  "version": "1.0.1",
+  "name": "Medlingo",
+  "version": "4.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,7 +18,7 @@
     "email": "sanidhya.verma12345@gmail.com",
     "url": "https://github.com/sanidhyy"
   },
-  "description": "Interactive platform for language learning with lessons, quizzes, and progress tracking.",
+  "description": "Learn, practice and master medical concepts and terminologies with MedLingo.",
   "keywords": [
     "reactjs",
     "nextjs",
