@@ -17,6 +17,7 @@ export const UserProgress = ({
   activeCourse,
   hearts,
   points,
+  yellowStars,
   hasActiveSubscription,
 }: UserProgressProps) => {
   return (
