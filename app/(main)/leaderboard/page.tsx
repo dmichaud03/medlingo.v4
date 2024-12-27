@@ -36,6 +36,7 @@ const LeaderboardPage = async () => {
           activeCourse={userProgress.activeCourse}
           hearts={userProgress.hearts}
           points={userProgress.points}
+          yellowStars={userProgress.yellowStars}
           hasActiveSubscription={isPro}
         />
         {!isPro && <Promo />}
