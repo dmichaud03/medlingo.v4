@@ -125,3 +125,26 @@ export const refillHearts = async () => {
   revalidatePath("/quests");
   revalidatePath("/leaderboard");
 };
+
+export const awardYellowStars = async () => {
+  const currentUserProgress = await getUserProgress();
+
+  if (!currentUserProgress) throw new Error("User progress not found.");
+
+  const earnedStars = Math.floor(currentUserProgress.points / XP_FOR_YELLOW_STAR);
+  const existingStars = currentUserProgress.yellowStars;
+
+  if (earnedStars > existingStars && existingStars < MAX_YELLOW_STARS) {
+    await db
+      .update(userProgress)
+      .set({
+        yellowStars: Math.min(earnedStars, MAX_YELLOW_STARS),
+      })
+      .where(eq(userProgress.userId, currentUserProgress.userId));
+
+    revalidatePath("/shop");
+    revalidatePath("/learn");
+    revalidatePath("/quests");
+    revalidatePath("/leaderboard");
+  }
+};
