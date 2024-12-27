@@ -28,3 +28,6 @@ export const QUESTS = [
     value: 1000,
   },
 ];
+
+export const XP_FOR_YELLOW_STAR = 1000; // XP required to earn a yellow star
+export const MAX_YELLOW_STARS = 10; // Maximum stars a user can hold
