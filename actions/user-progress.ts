@@ -5,8 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { MAX_HEARTS, POINTS_TO_REFILL } from "@/constants";
-import { XP_FOR_YELLOW_STAR } from "@/constants";
+import { MAX_HEARTS, POINTS_TO_REFILL, XP_FOR_YELLOW_STAR,  MAX_YELLOW_STARS} from "@/constants";
 import db from "@/db/drizzle";
 import {
   getCourseById,
