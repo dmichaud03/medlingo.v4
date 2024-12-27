@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { MAX_HEARTS, POINTS_TO_REFILL } from "@/constants";
+import { XP_FOR_YELLOW_STAR } from "@/constants";
 import db from "@/db/drizzle";
 import {
   getCourseById,
